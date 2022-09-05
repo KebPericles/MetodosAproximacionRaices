@@ -5,8 +5,6 @@ import org.mariuszgromada.math.mxparser.Function;
 
 public class MetodoPuntoFijo extends Metodo {
 
-    double x;
-
     public MetodoPuntoFijo() {
         init();
 
@@ -27,12 +25,12 @@ public class MetodoPuntoFijo extends Metodo {
         scanner.nextLine();
     }
 
-    protected void setMetodoFuncion() {
-        metodoFuncion = () -> {
+    protected void setLambdaIteracion() {
+        lambdaIteracion = () -> {
             Argument xi = getArgumentN();
             xi.setArgumentValue(fi1.calculate(xi));
 
-            System.out.printf((debugFuncion.run()) + "%n",
+            System.out.printf((lambdaDebug.run()) + "%n",
                     xi.getArgumentValue(),
                     f.calculate(xi)
             );

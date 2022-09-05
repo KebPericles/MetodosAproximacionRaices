@@ -6,15 +6,6 @@ import org.mariuszgromada.math.mxparser.Function;
 public class MetodoSteffenson extends Metodo {
 
     //Programa para calcular la raiz de una funcion por el metodo de Steffenson
-    //F1: Introducir la funcion
-    //F2: Introducir los puntos
-    //F3: Introducir la precision
-    //F4: Definir xi+1
-    //F5: Encontrar raiz
-
-    //Variables
-    double x;
-    String ps;
 
     public MetodoSteffenson() {
         init();
@@ -56,11 +47,11 @@ public class MetodoSteffenson extends Metodo {
     }
 
     @Override
-    void setMetodoFuncion() {
-        metodoFuncion = () -> {
+    void setLambdaIteracion() {
+        lambdaIteracion = () -> {
             Argument xi = getArgumentN();
             xi.setArgumentValue(fi1.calculate(xi));
-            System.out.printf(debugFuncion.run(), xi.getArgumentValue(), f.calculate(xi));
+            System.out.printf(lambdaDebug.run(), xi.getArgumentValue(), f.calculate(xi));
             return f.calculate(xi);
         };
     }

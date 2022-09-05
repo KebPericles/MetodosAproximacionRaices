@@ -10,8 +10,8 @@ import java.util.Scanner;
 public abstract class Metodo {
     protected int p, iteracion;
     protected double fxi;
-    protected MetodoFuncion metodoFuncion;
-    protected DebugFuncion debugFuncion;
+    protected MetodoFuncion lambdaIteracion;
+    protected DebugFuncion lambdaDebug;
     protected Hashtable<String, Argument> xi;
     protected Function f;
     protected Function fi1;
@@ -37,7 +37,7 @@ public abstract class Metodo {
         pedirFuncion();
         pedirPuntos();
         pedirPrecision();
-        setMetodoFuncion();
+        setLambdaIteracion();
     }
 
     void pedirPrecision() {
@@ -107,7 +107,7 @@ public abstract class Metodo {
         return xi.get(getKey(n));
     }
 
-    public Argument getArgumentN(){
+    public Argument getArgumentN() {
         return getArgumentN(0);
     }
 
@@ -116,11 +116,11 @@ public abstract class Metodo {
     }
 
     protected void setXi(double x) {
-        setXi(x,0);
+        setXi(x, 0);
     }
 
     public void setXi(double x, int n) {
-        setArgumentN(n, new Argument(getKey(n),x));
+        setArgumentN(n, new Argument(getKey(n), x));
     }
 
     protected String getKey(int n) {
@@ -189,18 +189,21 @@ public abstract class Metodo {
      * @return El valor de la funcion evaluada en xi+1
      */
     protected double iterar() {
-        return metodoFuncion.run();
+        return lambdaIteracion.run();
     }
 
-    abstract void setMetodoFuncion();
+    /**
+     * Asigna el proceso a usar durante cada iteracion
+     */
+    abstract void setLambdaIteracion();
 
 
     protected interface DebugFuncion {
         String run();
     }
 
-    private void setDebugFuncion(DebugFuncion debugFuncion) {
-        this.debugFuncion = debugFuncion;
+    private void setLambdaDebug(DebugFuncion lambdaDebug) {
+        this.lambdaDebug = lambdaDebug;
     }
 
     /**
@@ -210,10 +213,10 @@ public abstract class Metodo {
      */
     protected void setDebugState(boolean debug) {
         if (debug) {
-            setDebugFuncion(this::getDebug);
+            setLambdaDebug(this::getDebug);
             return;
         }
 
-        setDebugFuncion(() -> "");
+        setLambdaDebug(() -> "");
     }
 }
