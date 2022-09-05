@@ -4,13 +4,15 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Function;
 import org.mariuszgromada.math.mxparser.mXparser;
 
+import java.util.Hashtable;
 import java.util.Scanner;
 
 public abstract class Metodo {
     protected int p, iteracion;
-    private MetodoFuncion metodoFuncion;
+    protected double fxi;
+    protected MetodoFuncion metodoFuncion;
     protected DebugFuncion debugFuncion;
-    protected Argument xi;
+    protected Hashtable<String, Argument> xi;
     protected Function f;
     protected Function fi1;
     protected Scanner scanner;
@@ -20,6 +22,8 @@ public abstract class Metodo {
         mXparser.disableAlmostIntRounding();
         mXparser.disableUlpRounding();
         mXparser.enableCanonicalRounding();
+
+        xi = new Hashtable<>();
 
         scanner = new Scanner(System.in);
 
@@ -31,8 +35,9 @@ public abstract class Metodo {
      */
     public void initMetodo() {
         pedirFuncion();
-        setXi(pedirPunto());
+        pedirPuntos();
         pedirPrecision();
+        setMetodoFuncion();
     }
 
     void pedirPrecision() {
@@ -50,7 +55,9 @@ public abstract class Metodo {
 
     abstract void pedirFuncion();
 
-    abstract double pedirPunto();
+    abstract void pedirPuntos();
+
+    abstract void condicionesIniciales();
 
     /**
      * Ejecuta el metodo el numero de iteraciones indicado y mostrando o no los pasos
@@ -58,47 +65,30 @@ public abstract class Metodo {
      * @param iteraciones El numero de iteraciones a ejecutar, si es menor o igual a 0 entonces se ejecuta hasta aproximar la raiz con la precision deseada
      * @param debug       Si es true entonces se mostraran los pasos de cada iteracion
      */
-    abstract public double calcular(int iteraciones, boolean debug);
+    public double calcular(int iteraciones, boolean debug) {
+        setDebugState(debug);
+        iteracion = 0;
 
-    /**
-     * Ejecuta el metodo el numero de iterciones indicado sin mostrar los pasos
-     *
-     * @param iteraciones El numero de iteraciones a ejecutar, si es menor o igual a 0 entonces se ejecuta hasta aproximar la raiz con la precision deseada
-     */
-    public double calcular(int iteraciones) {
-        return calcular(iteraciones, false);
-    }
+        //Condiciones iniciales
+        condicionesIniciales();
 
-    /**
-     * Calcula la raiz de la funcion mostrando los pasos
-     *
-     * @param debug Si es true entonces se mostraran los pasos de cada iteracion
-     */
-    public double calcular(boolean debug) {
-        return calcular(0, debug);
-    }
-
-    /**
-     * Calcula la raiz de la funcion sin mostrar los pasos
-     */
-    public double calcular() {
-        return calcular(0, false);
+        if (iteraciones <= 0) {
+            do {
+                imprimirIteracion();
+                fxi = iterar();
+                iteracion++;
+            } while (redondear(fxi) != 0);
+        } else {
+            for (; iteracion < iteraciones; iteracion++) {
+                imprimirIteracion();
+                iterar();
+            }
+        }
+        return getArgumentN().getArgumentValue();
     }
 
     public void mostrarResultado(int iteraciones, boolean debug) {
         System.out.printf((floatStringPrint()) + "%n", calcular(iteraciones, debug));
-    }
-
-    public void mostrarResultado(int iteraciones) {
-        mostrarResultado(iteraciones, false);
-    }
-
-    public void mostrarResultado(boolean debug) {
-        mostrarResultado(0, debug);
-    }
-
-    public void mostrarResultado() {
-        mostrarResultado(0, false);
     }
 
     //---------------------
@@ -106,8 +96,35 @@ public abstract class Metodo {
     //--------------------
     //Setters y Getters
     //--------------------
+
+    /**
+     * Devuelve el argumento xi+n
+     *
+     * @param n numero entero que indica el indice, si es 0 entonces devuelve xi
+     * @return retorna el argumento xi+n
+     */
+    public Argument getArgumentN(int n) {
+        return xi.get(getKey(n));
+    }
+
+    public Argument getArgumentN(){
+        return getArgumentN(0);
+    }
+
+    public void setArgumentN(int n, Argument argument) {
+        xi.put(getKey(n), argument);
+    }
+
     protected void setXi(double x) {
-        xi = new Argument("xi", x);
+        setXi(x,0);
+    }
+
+    public void setXi(double x, int n) {
+        setArgumentN(n, new Argument(getKey(n),x));
+    }
+
+    protected String getKey(int n) {
+        return (n == 0 ? "xi" : (n < 0) ? "x" + Math.abs(n) + "i" : "xi" + n);
     }
 
     //---------------------
@@ -163,7 +180,7 @@ public abstract class Metodo {
      * Interfaz para la creacion de lambdas de los diferentes metodos numericos
      */
     protected interface MetodoFuncion {
-        double run(Argument xi, Function f, Function fi1, DebugFuncion debugFuncion);
+        double run();
     }
 
     /**
@@ -172,12 +189,10 @@ public abstract class Metodo {
      * @return El valor de la funcion evaluada en xi+1
      */
     protected double iterar() {
-        return metodoFuncion.run(xi, f, fi1, debugFuncion);
+        return metodoFuncion.run();
     }
 
-    protected void setMetodoFuncion(MetodoFuncion metodoFuncion) {
-        this.metodoFuncion = metodoFuncion;
-    }
+    abstract void setMetodoFuncion();
 
 
     protected interface DebugFuncion {
@@ -200,6 +215,5 @@ public abstract class Metodo {
         }
 
         setDebugFuncion(() -> "");
-
     }
 }

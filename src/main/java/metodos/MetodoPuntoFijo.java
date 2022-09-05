@@ -5,21 +5,13 @@ import org.mariuszgromada.math.mxparser.Function;
 
 public class MetodoPuntoFijo extends Metodo {
 
-    double x, fxi, xi1;
+    double x;
 
     public MetodoPuntoFijo() {
         init();
 
-        // Se basa en
+        // Formula para el siguiente punto
         fi1 = new Function("fi1(xi)=xi+f(xi)", f);
-
-        setMetodoFuncion((xi, f, fi1, debug) -> {
-            xi.setArgumentValue(fi1.calculate(xi));
-
-            System.out.printf((getDebug()) + "%n", xi.getArgumentValue(), f.calculate(xi));
-
-            return redondear(f.calculate(xi));
-        });
     }
 
     @Override
@@ -29,36 +21,29 @@ public class MetodoPuntoFijo extends Metodo {
     }
 
     @Override
-    double pedirPunto() {
+    void pedirPuntos() {
         System.out.println("Introduce el punto inicial:");
-        x = scanner.nextDouble();
+        setXi(scanner.nextDouble());
         scanner.nextLine();
-
-        return x;
     }
 
-    @Override
-    public double calcular(int iteraciones, boolean debug) {
-        setDebugState(debug);
-        iteracion = 0;
+    protected void setMetodoFuncion() {
+        metodoFuncion = () -> {
+            Argument xi = getArgumentN();
+            xi.setArgumentValue(fi1.calculate(xi));
 
-        //Condiciones iniciales
-        System.out.printf("f(x)=%s\nx0=" + floatStringPrint() + "\nf(x0)=" + floatStringPrint() + "%n", f.getFunctionExpressionString(), xi.getArgumentValue(), f.calculate(xi));
-        System.out.println("     " + fi1.calculate(xi));
+            System.out.printf((debugFuncion.run()) + "%n",
+                    xi.getArgumentValue(),
+                    f.calculate(xi)
+            );
 
-        if (iteraciones <= 0) {
-            do {
-                imprimirIteracion();
-                fxi = iterar();
-                iteracion++;
-            } while (redondear(fxi) != 0);
-        } else {
-            for (; iteracion < iteraciones; iteracion++) {
-                imprimirIteracion();
-                iterar();
-            }
-        }
-        return xi1;
+            return redondear(f.calculate(xi));
+        };
+    }
+
+    protected void condicionesIniciales() {
+        System.out.printf("f(x)=%s\nx0=" + floatStringPrint() + "\nf(x0)=" + floatStringPrint() + "%n", f.getFunctionExpressionString(), getArgumentN().getArgumentValue(), f.calculate(getArgumentN()));
+        System.out.println("     " + fi1.calculate(getArgumentN()));
     }
 
     @Override
