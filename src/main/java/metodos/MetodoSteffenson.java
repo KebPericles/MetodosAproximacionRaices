@@ -1,6 +1,5 @@
 package metodos;
 
-import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Function;
 
 public class MetodoSteffenson extends Metodo {
@@ -18,15 +17,15 @@ public class MetodoSteffenson extends Metodo {
 
     public MetodoSteffenson() {
         init();
-        pedirCosas();
+
         fi1 = new Function("fi1(xi)= xi - ( f(xi)^2 ) / ( f(xi + f(xi)) - f(xi) )", f);
 
-        setMetodoFuncion((xi, fi1, f, debug) -> {
+        setMetodoFuncion((xi, f, fi1, debug) -> {
             double xi1;
             xi1 = fi1.calculate(xi);
 
             xi.setArgumentValue(xi1);
-            System.out.print(String.format(debug.run(), xi1, f.calculate(xi)));
+            System.out.printf(debug.run(), xi1, f.calculate(xi));
             return f.calculate(xi);
         });
     }
@@ -39,35 +38,38 @@ public class MetodoSteffenson extends Metodo {
     }
 
     @Override
-    void pedirPunto() {
+    double pedirPunto() {
         //Introducir el punto
         System.out.println("Introduce el punto inicial:");
         x = scanner.nextDouble();
-
         scanner.nextLine();
 
-        xi = new Argument("xi", x);
+        return x;
     }
 
     @Override
     public double calcular(int iteraciones, boolean debug) {
         setDebugState(debug);
+        iteracion = 0;
 
         //Condiciones iniciales
-        System.out.println(String.format("f(x)=%s\nx0="+floatStringPrint()+"\nfx0="+floatStringPrint(),f.getFunctionExpressionString(),xi.getArgumentValue(),f.calculate(xi)));
-        System.out.println("     "+fi1.calculate(xi));
+        System.out.printf("f(x)=%s\nx0=" + floatStringPrint() + "\nfx0=" + floatStringPrint() + "%n", f.getFunctionExpressionString(), xi.getArgumentValue(), f.calculate(xi));
+        System.out.println("     " + fi1.calculate(xi));
 
         // Si las iteraciones son igual o menor que cero entonces se busca la raiz segun la precision pedida
         // si no se hacen las iteraciones requeridas
         if (iteraciones == 0) {
 
             do {
-                fxi = metodoIteracion();
+                imprimirIteracion();
+                fxi = iterar();
+                iteracion++;
             } while (redondear(fxi) != 0);
         } else {
 
-            for (int i = 0; i < iteraciones; i++) {
-                metodoIteracion();
+            for (; iteracion < iteraciones; iteracion++) {
+                imprimirIteracion();
+                iterar();
             }
         }
 
@@ -81,6 +83,6 @@ public class MetodoSteffenson extends Metodo {
 
     @Override
     String getDebug() {
-        return ("xi = " + floatStringPrint() + " | fxi = " + floatStringPrint() + "\n");
+        return ("x = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n");
     }
 }

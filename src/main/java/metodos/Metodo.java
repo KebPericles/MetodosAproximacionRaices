@@ -7,7 +7,7 @@ import org.mariuszgromada.math.mxparser.mXparser;
 import java.util.Scanner;
 
 public abstract class Metodo {
-    protected int p;
+    protected int p, iteracion;
     private MetodoFuncion metodoFuncion;
     protected DebugFuncion debugFuncion;
     protected Argument xi;
@@ -22,28 +22,16 @@ public abstract class Metodo {
         mXparser.enableCanonicalRounding();
 
         scanner = new Scanner(System.in);
+
+        initMetodo();
     }
 
     /**
-     * Redondea un numero a la precision deseada
-     *
-     * @param x El numero a redondear
-     * @param p El numero de cifras despues del punto
+     * Pide los datos necesarios para ejecutar el método
      */
-    public double redondear(double x, int p) {
-        return Math.round(x * Math.pow(10, p)) / Math.pow(10, p);
-    }
-
-    public double redondear(double x) {
-        return redondear(x, p);
-    }
-
-    /**
-     * Pide la funcion, el punto y la precision
-     */
-    public void pedirCosas() {
+    public void initMetodo() {
         pedirFuncion();
-        pedirPunto();
+        setXi(pedirPunto());
         pedirPrecision();
     }
 
@@ -62,7 +50,7 @@ public abstract class Metodo {
 
     abstract void pedirFuncion();
 
-    abstract void pedirPunto();
+    abstract double pedirPunto();
 
     /**
      * Ejecuta el metodo el numero de iteraciones indicado y mostrando o no los pasos
@@ -97,21 +85,36 @@ public abstract class Metodo {
         return calcular(0, false);
     }
 
-    public void mostrarResultado(int iteraciones, boolean debug){
-        System.out.println(String.format(floatStringPrint(),calcular(iteraciones, debug)));
+    public void mostrarResultado(int iteraciones, boolean debug) {
+        System.out.printf((floatStringPrint()) + "%n", calcular(iteraciones, debug));
     }
 
-    public void mostrarResultado(int iteraciones){
-        mostrarResultado(iteraciones,false);
+    public void mostrarResultado(int iteraciones) {
+        mostrarResultado(iteraciones, false);
     }
 
-    public void mostrarResultado(boolean debug){
-        mostrarResultado(0,debug);
+    public void mostrarResultado(boolean debug) {
+        mostrarResultado(0, debug);
     }
 
-    public void mostrarResultado(){
-        mostrarResultado(0,false);
+    public void mostrarResultado() {
+        mostrarResultado(0, false);
     }
+
+    //---------------------
+
+    //--------------------
+    //Setters y Getters
+    //--------------------
+    protected void setXi(double x) {
+        xi = new Argument("xi", x);
+    }
+
+    //---------------------
+
+    //--------------------
+    //String Functions
+    //--------------------
 
     /**
      * @return El nombre del metodo
@@ -123,35 +126,63 @@ public abstract class Metodo {
      */
     abstract String getDebug();
 
+    public void imprimirIteracion() {
+        System.out.printf("Iteracion %d%n", iteracion);
+    }
+
+    //---------------------
+
+    //---------------------
+    //Utilities
+    //---------------------
     String floatStringPrint() {
         return "%" + (p + 2) + "." + p + "f";
     }
 
     /**
+     * Redondea un numero a la precision deseada
+     *
+     * @param x El numero a redondear
+     * @param p El numero de cifras despues del punto
+     */
+    public double redondear(double x, int p) {
+        return Math.round(x * Math.pow(10, p)) / Math.pow(10, p);
+    }
+
+    public double redondear(double x) {
+        return redondear(x, p);
+    }
+
+    //---------------------
+
+    //---------------------
+    //Lambdas
+    //---------------------
+
+    /**
      * Interfaz para la creacion de lambdas de los diferentes metodos numericos
      */
     protected interface MetodoFuncion {
-        double run(Argument xi, Function fi1, Function f, DebugFuncion debugFuncion);
+        double run(Argument xi, Function f, Function fi1, DebugFuncion debugFuncion);
     }
-
 
     /**
      * Calcula el siguiente punto y retorna el valor de la funcion evaluada en el nuevo punto
      *
      * @return El valor de la funcion evaluada en xi+1
      */
-    protected double metodoIteracion() {
-        return metodoFuncion.run(xi, fi1, f, debugFuncion);
+    protected double iterar() {
+        return metodoFuncion.run(xi, f, fi1, debugFuncion);
     }
 
     protected void setMetodoFuncion(MetodoFuncion metodoFuncion) {
         this.metodoFuncion = metodoFuncion;
     }
 
+
     protected interface DebugFuncion {
         String run();
     }
-
 
     private void setDebugFuncion(DebugFuncion debugFuncion) {
         this.debugFuncion = debugFuncion;
@@ -159,20 +190,16 @@ public abstract class Metodo {
 
     /**
      * Establece si se deberá debuggear o no en cada iteracion
+     *
      * @param debug True para debuggear en cada iteracion, false para no imprimir nada
-     * */
+     */
     protected void setDebugState(boolean debug) {
         if (debug) {
-            setDebugFuncion(() -> {
-                return getDebug();
-            });
+            setDebugFuncion(this::getDebug);
             return;
         }
 
-        setDebugFuncion(() -> {
-                    return "";
-                }
-        );
+        setDebugFuncion(() -> "");
 
     }
 }
