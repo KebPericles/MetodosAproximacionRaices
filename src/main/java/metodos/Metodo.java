@@ -17,6 +17,10 @@ public abstract class Metodo {
     protected Function fi1;
     protected Scanner scanner;
 
+    public Metodo() {
+        init();
+    }
+
     protected void init() {
         //Configurar libreria
         mXparser.disableAlmostIntRounding();
@@ -40,6 +44,9 @@ public abstract class Metodo {
         setLambdaIteracion();
     }
 
+    /**
+     * Metodo donde se pide ingresar la precision decimal deseada para la raiz
+     */
     void pedirPrecision() {
         String ps;
         //Precision
@@ -53,10 +60,19 @@ public abstract class Metodo {
         p = ((pa.length != 1) ? pa[1] : pa[0]).length();
     }
 
+    /**
+     * Implementacion del proceso donde se debe de pedir la o las funciones necesarias para realizar el metodo
+     */
     abstract void pedirFuncion();
 
+    /**
+     * Implementacion del proceso donde se piden los puntos necesarios para el metodo
+     */
     abstract void pedirPuntos();
 
+    /**
+     * Implementacion donde se debe de imprimir las condiciones iniciales del metodo
+     */
     abstract void condicionesIniciales();
 
     /**
@@ -74,13 +90,11 @@ public abstract class Metodo {
 
         if (iteraciones <= 0) {
             do {
-                imprimirIteracion();
                 fxi = iterar();
                 iteracion++;
             } while (redondear(fxi) != 0);
         } else {
             for (; iteracion < iteraciones; iteracion++) {
-                imprimirIteracion();
                 iterar();
             }
         }
@@ -143,14 +157,10 @@ public abstract class Metodo {
      */
     abstract String getDebug();
 
-    public void imprimirIteracion() {
-        System.out.printf("Iteracion %d%n", iteracion);
-    }
-
     //---------------------
 
     //---------------------
-    //Utilities
+    // Utilities
     //---------------------
     String floatStringPrint() {
         return "%" + (p + 2) + "." + p + "f";
@@ -193,7 +203,7 @@ public abstract class Metodo {
     }
 
     /**
-     * Asigna el proceso a usar durante cada iteracion
+     * Asigna a lambdaFuncion la funcion a usar durante cada iteracion
      */
     abstract void setLambdaIteracion();
 

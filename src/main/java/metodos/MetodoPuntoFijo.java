@@ -6,7 +6,7 @@ import org.mariuszgromada.math.mxparser.Function;
 public class MetodoPuntoFijo extends Metodo {
 
     public MetodoPuntoFijo() {
-        init();
+        super();
 
         // Formula para el siguiente punto
         fi1 = new Function("fi1(xi)=xi+f(xi)", f);
@@ -51,6 +51,6 @@ public class MetodoPuntoFijo extends Metodo {
 
     @Override
     String getDebug() {
-        return "x = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n";
+        return "Ciclo " + iteracion + "\nx = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n";
     }
 }

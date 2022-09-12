@@ -8,7 +8,7 @@ public class MetodoSecante extends Metodo {
     Function df;
 
     public MetodoSecante() {
-        init();
+        super();
 
         //F4
         df = new Function("df(x0,x1)=(f(x0)-f(x1))/(x0-x1)", f);
@@ -42,7 +42,7 @@ public class MetodoSecante extends Metodo {
 
     @Override
     void condicionesIniciales() {
-        System.out.printf("f(x) = %s%nx0 = "+floatStringPrint()+"           x1 = "+floatStringPrint()+"%n",
+        System.out.printf("f(x) = %s%nx0 = " + floatStringPrint() + "           x1 = " + floatStringPrint() + "%n",
                 f.getFunctionExpressionString(),
                 getArgumentN(-1).getArgumentValue(),
                 getArgumentN(0).getArgumentValue()
@@ -62,7 +62,7 @@ public class MetodoSecante extends Metodo {
      */
     @Override
     String getDebug() {
-        return "x = " + floatStringPrint() + " | f(x)" + floatStringPrint() + "\n";
+        return "Ciclo " + iteracion + "\nx = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n";
     }
 
     /**

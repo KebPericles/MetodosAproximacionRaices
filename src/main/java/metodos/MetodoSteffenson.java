@@ -8,7 +8,7 @@ public class MetodoSteffenson extends Metodo {
     //Programa para calcular la raiz de una funcion por el metodo de Steffenson
 
     public MetodoSteffenson() {
-        init();
+        super();
 
         fi1 = new Function("fi1(xi)= xi - ( f(xi)^2 ) / ( f(xi + f(xi)) - f(xi) )", f);
     }
@@ -28,7 +28,7 @@ public class MetodoSteffenson extends Metodo {
         scanner.nextLine();
     }
 
-    protected void condicionesIniciales(){
+    protected void condicionesIniciales() {
         System.out.printf("f(x)=%s\nx0=" + floatStringPrint() + "\nf(x0)=" + floatStringPrint() + "%n",
                 f.getFunctionExpressionString(),
                 getArgumentN().getArgumentValue(),
@@ -43,7 +43,7 @@ public class MetodoSteffenson extends Metodo {
 
     @Override
     String getDebug() {
-        return ("x = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n");
+        return "Ciclo " + iteracion + "\nx = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n";
     }
 
     @Override
