@@ -89,10 +89,9 @@ public abstract class Metodo {
         condicionesIniciales();
 
         if (iteraciones <= 0) {
-            do {
-                fxi = iterar();
+            while (redondear(iterar()) != 0) {
                 iteracion++;
-            } while (redondear(fxi) != 0);
+            }
         } else {
             for (; iteracion < iteraciones; iteracion++) {
                 iterar();
@@ -118,6 +117,7 @@ public abstract class Metodo {
      * @return retorna el argumento xi+n
      */
     public Argument getArgumentN(int n) {
+        if (xi.get(getKey(n)) == null ) setXi(0,n);
         return xi.get(getKey(n));
     }
 
@@ -204,6 +204,7 @@ public abstract class Metodo {
 
     /**
      * Asigna a lambdaFuncion la funcion a usar durante cada iteracion
+     * La función deberá retornar f(x) evaluada en el nuevo punto
      */
     abstract void setLambdaIteracion();
 

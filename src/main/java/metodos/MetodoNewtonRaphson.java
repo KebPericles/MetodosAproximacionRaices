@@ -4,8 +4,6 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Function;
 
 public class MetodoNewtonRaphson extends Metodo {
-
-    private final String debug = "Ciclo %d \nx = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n";
     Function df;
 
     public MetodoNewtonRaphson() {
@@ -52,7 +50,7 @@ public class MetodoNewtonRaphson extends Metodo {
      */
     @Override
     String getDebug() {
-        return debug;
+        return "Ciclo %d \nx = " + floatStringPrint() + " | f(x) = " + floatStringPrint() + "\n";
     }
 
     /**
