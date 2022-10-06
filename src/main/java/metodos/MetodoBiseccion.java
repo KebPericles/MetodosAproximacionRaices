@@ -58,7 +58,7 @@ public class MetodoBiseccion extends Metodo {
      * Implementacion donde se debe de imprimir las condiciones iniciales del metodo
      */
     @Override
-    void condicionesIniciales() {
+    void imprimirCondicionesIniciales() {
         System.out.printf("f(x) = %s\n" +
                         "xd = " + floatStringPrint() + " | f(xd) = " + floatStringPrint() + "\n" +
                         "xu = " + floatStringPrint() + " | f(xu) = " + floatStringPrint() + "\n",
@@ -72,7 +72,7 @@ public class MetodoBiseccion extends Metodo {
      * @return El nombre del metodo
      */
     @Override
-    String getNombre() {
+    public String getNombre() {
         return "Metodo de Biseccion";
     }
 

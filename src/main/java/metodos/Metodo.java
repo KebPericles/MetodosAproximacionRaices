@@ -18,26 +18,27 @@ public abstract class Metodo {
     protected Scanner scanner;
 
     public Metodo() {
-        init();
+        iniciar();
     }
 
-    protected void init() {
+    protected void iniciar() {
         //Configurar libreria
         mXparser.disableAlmostIntRounding();
         mXparser.disableUlpRounding();
         mXparser.enableCanonicalRounding();
 
+        // Inicializar el guardado de los puntos
         xi = new Hashtable<>();
 
         scanner = new Scanner(System.in);
 
-        initMetodo();
+        iniciarMetodo();
     }
 
     /**
      * Pide los datos necesarios para ejecutar el método
      */
-    public void initMetodo() {
+    public void iniciarMetodo() {
         pedirFuncion();
         pedirPuntos();
         pedirPrecision();
@@ -51,7 +52,7 @@ public abstract class Metodo {
         String ps;
         //Precision
         do {
-            System.out.println("Ingresa la precisión deseada (solo 0 y debe terminar con 1)(ej. 0.001 para 2 cifras decimales de presición)");
+            System.out.println("Ingresa la precisión deseada (solo 0 y debe terminar con 1)(ej. 0.001 para 2 cifras decimales de precisión)");
             ps = scanner.nextLine();
         } while (!ps.matches("^0?\\.0*1$"));
 
@@ -73,7 +74,7 @@ public abstract class Metodo {
     /**
      * Implementacion donde se debe de imprimir las condiciones iniciales del metodo
      */
-    abstract void condicionesIniciales();
+    abstract void imprimirCondicionesIniciales();
 
     /**
      * Ejecuta el metodo el numero de iteraciones indicado y mostrando o no los pasos
@@ -85,8 +86,7 @@ public abstract class Metodo {
         setDebugState(debug);
         iteracion = 0;
 
-        //Condiciones iniciales
-        condicionesIniciales();
+        imprimirCondicionesIniciales();
 
         if (iteraciones <= 0) {
             while (redondear(iterar()) != 0) {
@@ -101,7 +101,7 @@ public abstract class Metodo {
     }
 
     public void mostrarResultado(int iteraciones, boolean debug) {
-        System.out.printf((floatStringPrint()) + "%n", calcular(iteraciones, debug));
+        System.out.printf("El resultado es: "+(floatStringPrint()) + "%n", calcular(iteraciones, debug));
     }
 
     //---------------------
@@ -150,7 +150,7 @@ public abstract class Metodo {
     /**
      * @return El nombre del metodo
      */
-    abstract String getNombre();
+    public abstract String getNombre();
 
     /**
      * Crea el formato para debuggear el metodo, debe llevar un salto de linea al final

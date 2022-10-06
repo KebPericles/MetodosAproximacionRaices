@@ -41,7 +41,7 @@ public class MetodoSecante extends Metodo {
     }
 
     @Override
-    void condicionesIniciales() {
+    void imprimirCondicionesIniciales() {
         System.out.printf("f(x) = %s%nx0 = " + floatStringPrint() + "           x1 = " + floatStringPrint() + "%n",
                 f.getFunctionExpressionString(),
                 getArgumentN(-1).getArgumentValue(),
@@ -53,7 +53,7 @@ public class MetodoSecante extends Metodo {
      * @return El nombre del metodo
      */
     @Override
-    String getNombre() {
+    public String getNombre() {
         return "Metodo de la Secante";
     }
 

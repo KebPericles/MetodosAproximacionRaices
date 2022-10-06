@@ -28,7 +28,7 @@ public class MetodoSteffenson extends Metodo {
         scanner.nextLine();
     }
 
-    protected void condicionesIniciales() {
+    protected void imprimirCondicionesIniciales() {
         System.out.printf("f(x)=%s\nx0=" + floatStringPrint() + "\nf(x0)=" + floatStringPrint() + "%n",
                 f.getFunctionExpressionString(),
                 getArgumentN().getArgumentValue(),

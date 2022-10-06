@@ -39,13 +39,13 @@ public class MetodoPuntoFijo extends Metodo {
         };
     }
 
-    protected void condicionesIniciales() {
+    protected void imprimirCondicionesIniciales() {
         System.out.printf("f(x)=%s\nx0=" + floatStringPrint() + "\nf(x0)=" + floatStringPrint() + "%n", f.getFunctionExpressionString(), getArgumentN().getArgumentValue(), f.calculate(getArgumentN()));
         System.out.println("     " + fi1.calculate(getArgumentN()));
     }
 
     @Override
-    String getNombre() {
+    public String getNombre() {
         return "Método de punto fijo";
     }
 

@@ -27,7 +27,7 @@ public class MetodoNewtonRaphson extends Metodo {
     }
 
     @Override
-    void condicionesIniciales() {
+    void imprimirCondicionesIniciales() {
         System.out.printf("f(x)=%s\n" +
                         "x0=" + floatStringPrint() + "\n" +
                         "f(x0)=" + floatStringPrint() + "%n",
@@ -41,7 +41,7 @@ public class MetodoNewtonRaphson extends Metodo {
      * @return El nombre del metodo
      */
     @Override
-    String getNombre() {
+    public String getNombre() {
         return "Metodo de Newton-Raphson";
     }
 
